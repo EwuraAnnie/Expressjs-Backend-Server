@@ -5,46 +5,50 @@ const app = express();
 
 app.use(express.json());
 
-
 app.get("/", (req, res) => {
     res.send("Welcome to the !!!");
 });
 
-app.get("/info", (req, res) => {
-    res.send([
-        {
-            name: "Bless",
-            gender: "Female",
-        },
-        {
-            name: "Elisha",
-            gender: "Male",
-        },
-        {
-            name: "Ekow",
-            gender: "Male",
-            Title: "Champion",
-        }
-    ]);
-});
-
-    const Info = Schema({
-        name: {
+    const User = Schema({
+        firstName: {
             type: String,
             default: ""
         },
-        gender: {
+        lastName: {
+            type:String,
+            default: ""
+        },
+        dateOfBirth: {
+            type:String,
+            default: ""
+        },
+        school: {
             type:String,
             default: ""
         },
     }, {timeStampe: true});
 
-    app.post("/create", async (req, res) => {
-        const name = req.body.name;
-        const gender = req.body.gender;
+    app.post("/adduser", async (req, res) => {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const dateOfBirth = req.body.dateOfBirth;
+        const school = req.body.school;
         
-        const info = await Info.create({name, gender});
-        res.status(400).json({info});
+        const user = await User.create({firstName, lastName, dateOfBirth, school });
+         if(user){
+            return res.status(201).json({
+                message:"User has been created",
+        })
+        } else {
+            return res.status(204).json({
+                message:"failed to create User"
+            });
+        };
+    });
+
+    app.get("/getUsers", async (req, res) => {
+        const users = await User.find();
+        res.status(200).json({users});        
     });
 
 
